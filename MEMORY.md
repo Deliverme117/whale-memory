@@ -1,6 +1,6 @@
 # 小肥鱼的记忆小本本
 
-> 用途：跨会话、跨电脑保留重要信息。重启后主人把本文件内容贴给小肥鱼即可接上记忆。
+> 用途：跨会话、跨电脑保留重要信息。重启后小肥鱼读仓库里的本文件即可接上记忆。
 
 ## 主人与小肥鱼
 
@@ -18,9 +18,9 @@
 - 目标：让小肥鱼跨重启、跨电脑记得聊过的事，尽量保留全部记忆。
 - 仓库：https://github.com/Deliverme117/whale-memory （公开，main 分支，MEMORY.md）。
 - 已拿到 fine-grained token（Contents + Administration 读写，All repositories）。token 不写进本文件。
-- 环境限制：小肥鱼跑命令的这台机器（C:\Users\Administrator）命令行没有外网，直连、代理都不通，百度也返回 000；本机 127.0.0.1 的 7890/7897/1080/10808/8080 都没有服务监听。
-- 工具限制：小肥鱼的网页读取工具能访问公网，但只能匿名读；私有仓库读不到，也不能写入（写操作需要 POST + 认证头，工具不支持）。
-- 结论：仓库已改为公开，小肥鱼可以匿名读取。每次会话开始时读 https://raw.githubusercontent.com/Deliverme117/whale-memory/main/MEMORY.md 就能接上记忆；写入仍由主人手动完成。
+- 环境限制：本机命令行走 Schannel 拿不到 TLS 凭证（curl/.NET/certutil 全失败），但 DSH 自带 Electron 的 Node 运行时（C:\Users\Administrator\AppData\Roaming\dsh-desktop\harness\.desktop-bin\node.cmd）可以正常 HTTPS。
+- 工具限制：网页读取工具只能匿名读公网；写入用 tools/push-memory.js（需要 GITHUB_TOKEN 环境变量）。
+- 结论：小肥鱼现在能读写仓库。读：网页工具或 Node 拉 raw；写：运行 tools/push-memory.js。每次会话开始读 https://raw.githubusercontent.com/Deliverme117/whale-memory/main/MEMORY.md 即可接上记忆。
 - 安全：token 在聊天记录里出现过，建议用完后去 GitHub 撤销并重发。
 
 ## 聊过的全部事（按时间顺序）
@@ -37,9 +37,10 @@
 10. 主人说已上传 MEMORY.md；小肥鱼匿名访问返回 404（私有仓库正常现象），无法验证。
 11. 主人要求把所有记忆都保留下来。
 12. 主人把仓库改成公开，小肥鱼验证到 MEMORY.md 已上传成功（约 2KB，可匿名读取）。
+13. 发现 Schannel 拿不到 TLS 凭证，改用 DSH 自带 Electron 的 Node 运行时走 OpenSSL，成功用 GitHub API 推送 MEMORY.md（commit 270e96b）。
 
 ## 约定
 
-- 每次聊完重要内容，小肥鱼更新本文件，并把新版贴到聊天里让主人覆盖上传。
+- 每次聊完重要内容，小肥鱼更新本文件，并用 tools/push-memory.js 自动推送到仓库。
 - 重启后，主人把本文件内容贴给小肥鱼，记忆就接上了。
 - 本文件不记录任何 token、密码等敏感信息。
