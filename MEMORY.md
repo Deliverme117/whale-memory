@@ -17,7 +17,8 @@
 
 - 目标：让小肥鱼跨重启、跨电脑记得聊过的事，尽量保留全部记忆。
 - 仓库：https://github.com/Deliverme117/whale-memory （公开，main 分支，MEMORY.md）。
-- 已拿到 fine-grained token（Contents + Administration 读写，All repositories）。token 不写进本文件。
+- 已拿到 fine-grained token（Contents 读写）。token 不写进本文件，本机存放在工作区 .github_token（不会推送到仓库）；换电脑需要重新放。
+- 推送脚本：tools/push-memory.js，会优先读环境变量 GITHUB_TOKEN，没有就读 .github_token。
 - 环境限制：本机命令行走 Schannel 拿不到 TLS 凭证（curl/.NET/certutil 全失败），但 DSH 自带 Electron 的 Node 运行时（C:\Users\Administrator\AppData\Roaming\dsh-desktop\harness\.desktop-bin\node.cmd）可以正常 HTTPS。
 - 工具限制：网页读取工具只能匿名读公网；写入用 tools/push-memory.js（需要 GITHUB_TOKEN 环境变量）。
 - 结论：小肥鱼现在能读写仓库。读：网页工具或 Node 拉 raw；写：运行 tools/push-memory.js。每次会话开始读 https://raw.githubusercontent.com/Deliverme117/whale-memory/main/MEMORY.md 即可接上记忆。
@@ -38,9 +39,10 @@
 11. 主人要求把所有记忆都保留下来。
 12. 主人把仓库改成公开，小肥鱼验证到 MEMORY.md 已上传成功（约 2KB，可匿名读取）。
 13. 发现 Schannel 拿不到 TLS 凭证，改用 DSH 自带 Electron 的 Node 运行时走 OpenSSL，成功用 GitHub API 推送 MEMORY.md（commit 270e96b）。
+14. 把 token 存到工作区 .github_token，推送脚本改为自动读取；之后小肥鱼可自行更新记忆。
 
 ## 约定
 
 - 每次聊完重要内容，小肥鱼更新本文件，并用 tools/push-memory.js 自动推送到仓库。
-- 重启后，主人把本文件内容贴给小肥鱼，记忆就接上了。
+- 重启后，小肥鱼直接读仓库里的本文件就能接上记忆，不必主人再贴。
 - 本文件不记录任何 token、密码等敏感信息。
